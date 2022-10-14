@@ -14,25 +14,18 @@ static uint8_t s_led_state = 0;
 void app_main(void)
 {
 	esp_err_t ret;
-	uint8_t flash_buffer [8] = {0};
-	uint8_t * ptr_flash = flash_buffer;
+	spi_device_handle_t spi;
 
     // Configure the peripheral according to the LED type
 	int led_gpio = CONFIG_BLINK_GPIO;
-	int button_gpio = CONFIG_BUTTON_GPIO;
-
 	gpio_reset_pin(led_gpio); //Сброс инициализации gpio
-	gpio_reset_pin(button_gpio);
-
 	gpio_set_direction(led_gpio, GPIO_MODE_OUTPUT); //настройка направления работы данных gpio
-	gpio_set_direction(button_gpio, GPIO_MODE_INPUT);
-	gpio_set_pull_mode(button_gpio, GPIO_PULLUP_ONLY);
 
 	 // Configure SPI bus
 	spi_bus_config_t cfg =
 	{
 			.mosi_io_num = CONFIG_PIN_NUM_MOSI,
-			.miso_io_num = CONFIG_PIN_NUM_MISO,
+			.miso_io_num = -1,
 			.sclk_io_num = CONFIG_PIN_NUM_CLK,
 			.quadwp_io_num = -1,
 			.quadhd_io_num = -1,
@@ -41,21 +34,24 @@ void app_main(void)
 	 };
 	 ret = spi_bus_initialize(HSPI_HOST, &cfg, SPI_DMA_CH_AUTO); //инициализация шины SPI
 	 printf ("spi bus initialize: %d\r\n", ret);
-	 w25q_t dev; //объявление структуры подключения устройства
-	 w25_ini (&dev, HSPI_HOST, CONFIG_PIN_NUM_CS); //передачи ф-ии инициализации подключенного устройства
-	 W25_Read_ID(&dev);
-	 W25_Get_JEDEC_ID(&dev);
-	 W25_Read_SR(&dev);
-//	 W25_Write_Page(&dev);
+	 spi_device_interface_config_t devcfg={
+	         .clock_speed_hz=10*1000*1000,           //Clock out at 10 MHz
+	         .mode=0,                                //SPI mode 0
+	         .spics_io_num=CONFIG_PIN_NUM_CS,               //CS pin
+	         .queue_size=7,                          //We want to be able to queue 7 transactions at a time
+	         .pre_cb=lcd_spi_pre_transfer_callback,  //Specify pre-transfer callback to handle D/C line
+	   };
+	 ret=spi_bus_add_device(HSPI_HOST, &devcfg, &spi);
+	 printf ("spi bus add device: %d\r\n", ret);
 	 vTaskDelay(1000 / portTICK_PERIOD_MS);
+	 init_lcd7735 (spi, 320, 240);
+	 lcdFillRGB (spi, BLACK);
 
     while (1)
     {
 
     	s_led_state = !s_led_state;
     	gpio_set_level(led_gpio, s_led_state);
-    	W25_Read_Page(&dev, ptr_flash, 5);
-    	printf ("read from flash: 0x%X 0x%X 0x%X 0x%X 0x%X\r\n", flash_buffer[0], flash_buffer[1], flash_buffer[2], flash_buffer[3], flash_buffer[4]);
     	vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
 }
