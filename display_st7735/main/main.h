@@ -12,9 +12,9 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "sdkconfig.h"
-#include "DefineFont.h"
 #include "st7735.h"
 //---------------------------------------------------------------------
 
 #define BLINK_GPIO CONFIG_BLINK_GPIO
+
 #endif /* MAIN_MAIN_H_ */
