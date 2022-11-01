@@ -1,0 +1,24 @@
+menu "Example Configuration"
+
+    config BLINK_GPIO
+        int "Blink GPIO number"
+        range 0 48
+        default 15
+        help
+            GPIO number (IOxx) to blink on and off or the RMT signal for the addressable LED.
+			
+	config SDA_GPIO
+        int "SDA GPIO number"
+        range 0 48
+        default 21
+        help
+            GPIO number SDA.
+ 
+    config SCL_GPIO
+        int "SCL GPIO number"
+        range 0 48
+        default 22
+        help
+            GPIO number SCL.
+
+endmenu
