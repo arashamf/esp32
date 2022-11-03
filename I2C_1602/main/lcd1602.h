@@ -1,5 +1,5 @@
-#ifndef MAIN_LCD2004_H_
-#define MAIN_LCD2004_H_
+#ifndef MAIN_LCD1602_H_
+#define MAIN_LCD1602_H_
 //---------------------------------------------------------------------
 #include "i2c_user.h"
 #include <unistd.h>
@@ -18,4 +18,4 @@ void LCD_SetPos(uint8_t x, uint8_t y);
 void LCD_String(char* st);
 void clear_LCD1602 (void);
 //---------------------------------------------------------------------
-#endif /* MAIN_LCD2004_H_ */
+#endif /* MAIN_LCD1602_H_ */
