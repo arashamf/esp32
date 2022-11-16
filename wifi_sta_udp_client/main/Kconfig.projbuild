@@ -1,0 +1,62 @@
+# put here your custom config value
+menu "Example Configuration"
+    config BLINK_GPIO
+        int "Blink GPIO number"
+        range 0 48
+        default 15
+        help
+            GPIO number (IOxx) to blink on and off or the RMT signal for the addressable LED.
+			
+	config SDA_GPIO
+        int "SDA GPIO number"
+        range 0 48
+        default 21
+        help
+            GPIO number SDA.
+ 
+    config SCL_GPIO
+        int "SCL GPIO number"
+        range 0 48
+        default 22
+        help
+            GPIO number SCL. 
+			
+config ESP_WIFI_SSID
+    string "WiFi SSID"
+    default "myssid"
+    help
+	SSID (network name) for the example to connect to.
+
+config ESP_WIFI_PASSWORD
+    string "WiFi Password"
+    default "mypassword"
+    help
+	WiFi password (WPA or WPA2) for the example to use.
+	
+config ESP_MAXIMUM_RETRY
+    int "Maximum retry"
+    default 5
+    help
+        Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+		
+config SERVER_IP
+    string "SERVER IPV4 Address"
+    default "192.168.1.16"
+    help
+        SERVER IPV4 Address.
+ 
+config SERVER_PORT
+    int "Server Port"
+    range 0 65535
+    default 3333
+    help
+        The remote port.
+ 
+config CLIENT_PORT
+    int "Client Port"
+    range 0 65535
+    default 4444
+    help
+        The local port.
+		
+endmenu
